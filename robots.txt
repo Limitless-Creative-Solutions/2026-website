@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://limitless.lk/sitemap.xml

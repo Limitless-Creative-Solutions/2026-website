@@ -1,0 +1,14 @@
+{
+  "name": "Limitless Creative Solutions",
+  "description": "Sri Lanka’s most advanced creative agency & SaaS platform. We create, grow, and scale brands with futuristic digital experiences.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "AI-Powered Tools",
+    "SaaS Marketplace",
+    "Client Portal",
+    "Real-time Collaboration"
+  ]
+}
