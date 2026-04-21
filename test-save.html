@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Save Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .test-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .success {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .error {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .result {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        h1 {
+            color: #3b82f6;
+        }
+        h2 {
+            color: #60a5fa;
+            font-size: 18px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Admin Save Test Page</h1>
+    <p>This page tests if localStorage save functionality is working.</p>
+
+    <!-- Test 1: Basic localStorage -->
+    <div class="test-box">
+        <h2>Test 1: Basic localStorage</h2>
+        <button onclick="testBasicStorage()">Run Test</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <!-- Test 2: Save Services -->
+    <div class="test-box">
+        <h2>Test 2: Save Services Data</h2>
+        <button onclick="testSaveServices()">Save Test Service</button>
+        <button onclick="testLoadServices()">Load Services</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <!-- Test 3: Save Pricing -->
+    <div class="test-box">
+        <h2>Test 3: Save Pricing Data</h2>
+        <button onclick="testSavePricing()">Save Test Pricing</button>
+        <button onclick="testLoadPricing()">Load Pricing</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <!-- Test 4: Trigger Events -->
+    <div class="test-box">
+        <h2>Test 4: Trigger Update Events</h2>
+        <button onclick="triggerServicesEvent()">Trigger servicesUpdated</button>
+        <button onclick="triggerPricingEvent()">Trigger pricingUpdated</button>
+        <div id="test4-result"></div>
+    </div>
+
+    <!-- Test 5: View All Data -->
+    <div class="test-box">
+        <h2>Test 5: View All Saved Data</h2>
+        <button onclick="viewAllData()">View All localStorage</button>
+        <button onclick="clearAllData()">Clear All Data</button>
+        <div id="test5-result"></div>
+    </div>
+
+    <script>
+        function showResult(elementId, message, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result ${isSuccess ? 'success' : 'error'}">${message}</div>`;
+        }
+
+        // Test 1: Basic localStorage
+        function testBasicStorage() {
+            try {
+                localStorage.setItem('test', 'hello');
+                const value = localStorage.getItem('test');
+                if (value === 'hello') {
+                    showResult('test1-result', '✅ SUCCESS: localStorage is working!<br>Saved: "hello"<br>Retrieved: "' + value + '"');
+                } else {
+                    showResult('test1-result', '❌ FAILED: Retrieved value does not match', false);
+                }
+            } catch (e) {
+                showResult('test1-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        // Test 2: Save Services
+        function testSaveServices() {
+            try {
+                const testData = [{
+                    icon: "Terminal",
+                    title: "TEST SERVICE - " + new Date().toLocaleTimeString(),
+                    label: "Test Label",
+                    color: "from-blue-500/20",
+                    description: "This is a test service to verify save functionality.",
+                    demoLink: "https://demo.test.com",
+                    orderLink: "https://order.test.com"
+                }];
+                
+                localStorage.setItem('servicesData', JSON.stringify(testData));
+                showResult('test2-result', '✅ SUCCESS: Test service saved!<br><pre>' + JSON.stringify(testData, null, 2) + '</pre>');
+            } catch (e) {
+                showResult('test2-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        function testLoadServices() {
+            try {
+                const data = localStorage.getItem('servicesData');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    showResult('test2-result', '✅ SUCCESS: Services loaded!<br><pre>' + JSON.stringify(parsed, null, 2) + '</pre>');
+                } else {
+                    showResult('test2-result', '⚠️ No services data found. Save first!', false);
+                }
+            } catch (e) {
+                showResult('test2-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        // Test 3: Save Pricing
+        function testSavePricing() {
+            try {
+                const testData = [{
+                    name: "Test Plan",
+                    price: "$999",
+                    description: "Test pricing plan",
+                    features: ["Feature 1", "Feature 2"],
+                    icon: "Zap",
+                    popular: true
+                }];
+                
+                localStorage.setItem('pricingPlans', JSON.stringify(testData));
+                showResult('test3-result', '✅ SUCCESS: Test pricing saved!<br><pre>' + JSON.stringify(testData, null, 2) + '</pre>');
+            } catch (e) {
+                showResult('test3-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        function testLoadPricing() {
+            try {
+                const data = localStorage.getItem('pricingPlans');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    showResult('test3-result', '✅ SUCCESS: Pricing loaded!<br><pre>' + JSON.stringify(parsed, null, 2) + '</pre>');
+                } else {
+                    showResult('test3-result', '⚠️ No pricing data found. Save first!', false);
+                }
+            } catch (e) {
+                showResult('test3-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        // Test 4: Trigger Events
+        function triggerServicesEvent() {
+            try {
+                window.dispatchEvent(new Event('servicesUpdated'));
+                showResult('test4-result', '✅ SUCCESS: servicesUpdated event triggered!<br>Home page should reload services if listening.');
+            } catch (e) {
+                showResult('test4-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        function triggerPricingEvent() {
+            try {
+                window.dispatchEvent(new Event('pricingUpdated'));
+                showResult('test4-result', '✅ SUCCESS: pricingUpdated event triggered!<br>Home page should reload pricing if listening.');
+            } catch (e) {
+                showResult('test4-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        // Test 5: View All Data
+        function viewAllData() {
+            try {
+                const keys = Object.keys(localStorage);
+                let html = '✅ Found ' + keys.length + ' items in localStorage:<br><br>';
+                
+                keys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    html += '<strong>' + key + ':</strong><br>';
+                    html += '<pre>' + (value.length > 200 ? value.substring(0, 200) + '...' : value) + '</pre><br>';
+                });
+                
+                showResult('test5-result', html);
+            } catch (e) {
+                showResult('test5-result', '❌ ERROR: ' + e.message, false);
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ This will delete ALL saved data! Are you sure?')) {
+                try {
+                    localStorage.clear();
+                    showResult('test5-result', '✅ SUCCESS: All localStorage data cleared!');
+                } catch (e) {
+                    showResult('test5-result', '❌ ERROR: ' + e.message, false);
+                }
+            }
+        }
+
+        // Auto-run basic test on load
+        window.onload = function() {
+            testBasicStorage();
+        };
+    </script>
+</body>
+</html>
