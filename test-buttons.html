@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test WhatsApp & Call Buttons</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .container {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        h1 { color: #3b82f6; }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #0a0a0a;
+            border-radius: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+        button {
+            padding: 12px 24px;
+            margin: 10px 10px 10px 0;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #2563eb; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        pre {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+        .test-btn {
+            background: #10b981;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .test-btn:hover { background: #059669; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 WhatsApp & Call Buttons Tester</h1>
+        
+        <div class="section">
+            <h2>📝 Set Contact Info</h2>
+            <label>Phone Number (for Call button):</label>
+            <input type="text" id="phone" placeholder="+94 77 123 4567" value="+94771234567">
+            
+            <label>WhatsApp Number (NO + or spaces):</label>
+            <input type="text" id="whatsapp" placeholder="94771234567" value="94771234567">
+            
+            <button onclick="saveContactInfo()">💾 Save to LocalStorage</button>
+            <button onclick="loadContactInfo()">🔄 Load Current Info</button>
+        </div>
+
+        <div class="section">
+            <h2>🧪 Test Buttons</h2>
+            <button class="test-btn" onclick="testWhatsApp()">
+                💬 Test WhatsApp Button
+            </button>
+            <button class="test-btn" onclick="testCall()">
+                📞 Test Call Button
+            </button>
+        </div>
+
+        <div class="section">
+            <h2>📊 Current Data</h2>
+            <pre id="output">Click "Load Current Info" to see data...</pre>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Generated Links</h2>
+            <pre id="links">Save contact info to see links...</pre>
+        </div>
+    </div>
+
+    <script>
+        function saveContactInfo() {
+            const phone = document.getElementById('phone').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+
+            const contactInfo = {
+                email: "hello@limitless.lk",
+                phone: phone,
+                whatsapp: whatsapp,
+                address: "Colombo, Sri Lanka",
+                website: "https://limitless.lk",
+                facebook: "https://facebook.com/limitless",
+                instagram: "https://instagram.com/limitless",
+                linkedin: "https://linkedin.com/company/limitless",
+                twitter: "https://twitter.com/limitless"
+            };
+
+            localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
+            window.dispatchEvent(new Event("contactInfoUpdated"));
+            
+            alert("✅ Saved! Contact info updated.");
+            loadContactInfo();
+            showLinks();
+        }
+
+        function loadContactInfo() {
+            const saved = localStorage.getItem("contactInfo");
+            if (saved) {
+                const info = JSON.parse(saved);
+                document.getElementById('output').textContent = JSON.stringify(info, null, 2);
+                document.getElementById('phone').value = info.phone || '';
+                document.getElementById('whatsapp').value = info.whatsapp || '';
+                showLinks();
+            } else {
+                document.getElementById('output').textContent = "No contact info saved yet.";
+            }
+        }
+
+        function showLinks() {
+            const saved = localStorage.getItem("contactInfo");
+            if (saved) {
+                const info = JSON.parse(saved);
+                const waLink = `https://wa.me/${info.whatsapp}?text=Hi%20Limitless%20team`;
+                const callLink = `tel:${info.phone}`;
+                
+                document.getElementById('links').innerHTML = `
+<span class="info">WhatsApp Link:</span>
+${waLink}
+
+<span class="info">Call Link:</span>
+${callLink}
+                `.trim();
+            }
+        }
+
+        function testWhatsApp() {
+            const saved = localStorage.getItem("contactInfo");
+            if (saved) {
+                const info = JSON.parse(saved);
+                const link = `https://wa.me/${info.whatsapp}?text=Hi%20Limitless%20team,%20I'd%20like%20to%20start%20a%20new%20project.`;
+                console.log("Opening WhatsApp:", link);
+                window.open(link, '_blank');
+            } else {
+                alert("❌ No contact info saved! Save it first.");
+            }
+        }
+
+        function testCall() {
+            const saved = localStorage.getItem("contactInfo");
+            if (saved) {
+                const info = JSON.parse(saved);
+                const link = `tel:${info.phone}`;
+                console.log("Opening Call:", link);
+                window.location.href = link;
+            } else {
+                alert("❌ No contact info saved! Save it first.");
+            }
+        }
+
+        // Load on page load
+        window.onload = loadContactInfo;
+    </script>
+</body>
+</html>
